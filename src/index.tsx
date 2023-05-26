@@ -3,20 +3,15 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Test from "./pages/Test";
-
+import { RTCStoreProvider } from "./backend-layer/webrtc/rtcStoreProvider";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <RTCStoreProvider>
       <App />
-      <Routes>
-        <Route path="" Component={Test} />
-      </Routes>
-    </BrowserRouter>
+    </RTCStoreProvider>
   </React.StrictMode>
 );
 
