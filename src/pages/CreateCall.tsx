@@ -1,18 +1,13 @@
-import { useRTCPeerConnection } from "../backend-layer/webrtc/rtcStoreHooks";
+import { SelfCamera } from "../page-components/create-call/SelfCamera";
+import { MediaAccessStoreProvider } from "../backend-layer/media-access/mediaAccessStoreProvider";
 
 const CreateCall = () => {
-  const rtcPeerConnection = useRTCPeerConnection();
-
   return (
-    <div>
-      <div
-        onClick={() => {
-          console.log(rtcPeerConnection);
-        }}
-      >
-        Create
-      </div>
-    </div>
+    <>
+      <MediaAccessStoreProvider>
+        <SelfCamera />
+      </MediaAccessStoreProvider>
+    </>
   );
 };
 

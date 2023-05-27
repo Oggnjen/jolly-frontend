@@ -1,6 +1,7 @@
 import { createContext } from "react";
+import { emptyCallback } from "../utils/utils";
 
-export const emptyCallback = () => {};
+
 
 export interface RTCStoreState {
     rtcPeerConnection: RTCPeerConnection;
