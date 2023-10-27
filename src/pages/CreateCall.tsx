@@ -1,11 +1,14 @@
 import { SelfCamera } from "../page-components/create-call/SelfCamera";
 import { MediaAccessStoreProvider } from "../backend-layer/media-access/mediaAccessStoreProvider";
+import { RTCStoreProvider } from "../backend-layer/webrtc/rtcStoreProvider";
 
 const CreateCall = () => {
   return (
     <>
       <MediaAccessStoreProvider>
-        <SelfCamera />
+        <RTCStoreProvider>
+          <SelfCamera />
+        </RTCStoreProvider>
       </MediaAccessStoreProvider>
     </>
   );
