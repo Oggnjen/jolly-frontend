@@ -4,17 +4,26 @@ import { emptyCallback } from "../utils/utils";
 export interface RTCPeerConnectionInterface {
   rtcPeerConnection: RTCPeerConnection;
   user: string;
+  state: RTCPeerConnectionState;
+}
+
+export enum RTCPeerConnectionState {
+  CREATED,
+  SDP_GENERATED,
+  SDP_REMOTE_SET,
 }
 
 export interface RTCStoreState {
-  rtcPeerConnection: RTCPeerConnection;
-  setRtcPeerConnection: (rtcPeerConnection: RTCPeerConnection) => void;
+  rtcPeerConnections: RTCPeerConnectionInterface[];
+  setRtcPeerConnections: (
+    rtcPeerConnection: RTCPeerConnectionInterface[]
+  ) => void;
 }
 
 export function createRTCStoreStateDefaultValue(): RTCStoreState {
   return {
-    rtcPeerConnection: new RTCPeerConnection(),
-    setRtcPeerConnection: emptyCallback,
+    rtcPeerConnections: [],
+    setRtcPeerConnections: emptyCallback,
   };
 }
 

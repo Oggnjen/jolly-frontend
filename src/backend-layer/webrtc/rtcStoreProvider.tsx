@@ -1,26 +1,26 @@
 import { ReactNode, useState } from "react";
-import { RTCStoreContext, RTCStoreState } from "./rtcStoreContext";
+import {
+  RTCPeerConnectionInterface,
+  RTCStoreContext,
+  RTCStoreState,
+} from "./rtcStoreContext";
 
+export const rtcServers = {
+  iceServers: [
+    {
+      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+    },
+  ],
+  iceCandidatePoolSize: 10,
+};
 export function RTCStoreProvider({ children }: { children?: ReactNode }) {
-  const servers = {
-    iceServers: [
-      {
-        urls: [
-          "stun:stun1.l.google.com:19302",
-          "stun:stun2.l.google.com:19302",
-        ],
-      },
-    ],
-    iceCandidatePoolSize: 10,
-  };
-
-  const [rtcPeerConnection, setRtcPeerConnection] = useState<RTCPeerConnection>(
-    new RTCPeerConnection(servers)
-  );
+  const [rtcPeerConnection, setRtcPeerConnection] = useState<
+    RTCPeerConnectionInterface[]
+  >([]);
 
   const value: RTCStoreState = {
-    rtcPeerConnection: rtcPeerConnection,
-    setRtcPeerConnection: setRtcPeerConnection,
+    rtcPeerConnections: rtcPeerConnection,
+    setRtcPeerConnections: setRtcPeerConnection,
   };
 
   return (
