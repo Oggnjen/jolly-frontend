@@ -4,62 +4,23 @@ import {
   useGenerateSdp,
   useMakeRTCPeerConnection,
   useRTCPeerConnections,
+  useSetRemoteDescription,
 } from "../backend-layer/webrtc/rtcStoreHooks";
-import { selectAllMembers } from "../backend-layer/call/callStoreSelectors";
 import { useAllMembers, useMyId } from "../backend-layer/call/callStoreHooks";
 import { CallMember } from "../backend-layer/call/types";
-import { useAppDispatch } from "../backend-layer/store/store";
 import { Stomp } from "@stomp/stompjs";
-import { useOpenWebSocket } from "../backend-layer/websocket/webSocketService";
 
 const JoinCall = () => {
   const joinCall = useJoinCall();
   const [id, setId] = useState("");
-  const makeRtc = useMakeRTCPeerConnection();
-  const generateSdp = useGenerateSdp();
-  const rtcPeerConnections = useRTCPeerConnections();
-  const dispatch = useAppDispatch();
-
-  const myId = useMyId();
-
-  const members = useAllMembers();
-
+  const rtcPeerConnection = useRTCPeerConnections();
+  useOpenWebSocketOnJoinCall();
+  useMakeRtcConnections();
   useEffect(() => {
-    console.log(myId);
+    console.log(rtcPeerConnection);
+  }, [rtcPeerConnection]);
+  useGenerateSdps();
 
-    if (myId != "") {
-      var socket = new WebSocket("ws://localhost:8088/api/ws");
-      var ws = Stomp.over(socket);
-      console.log(rtcPeerConnections);
-
-      ws.connect(
-        {},
-        function () {
-          ws.subscribe(`/user/${myId}/queue/private`, function (message) {
-            console.log(message);
-
-            alert("Message " + message.body);
-          });
-        },
-        function () {
-          alert("STOMP error ");
-        }
-      );
-    }
-  }, [myId]);
-
-  useEffect(() => {
-    const allCallMembers: CallMember[] = Object.values(members);
-    allCallMembers.forEach((member) => {
-      makeRtc(member.memberId);
-    });
-  }, [members]);
-
-  useEffect(() => {
-    rtcPeerConnections.forEach((rtc) => {
-      generateSdp(rtc.user);
-    });
-  }, [rtcPeerConnections]);
   return (
     <>
       <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
@@ -73,6 +34,52 @@ const JoinCall = () => {
     </>
   );
 };
+
+function useGenerateSdps() {
+  const generateSdp = useGenerateSdp();
+  const rtcPeerConnections = useRTCPeerConnections();
+  useEffect(() => {
+    rtcPeerConnections.forEach((rtc) => {
+      generateSdp(rtc.user);
+    });
+  }, [rtcPeerConnections]);
+}
+
+function useMakeRtcConnections() {
+  const members = useAllMembers();
+  const makeRtc = useMakeRTCPeerConnection();
+  useEffect(() => {
+    const allCallMembers: CallMember[] = Object.values(members);
+    allCallMembers.forEach((member) => {
+      makeRtc(member.memberId);
+    });
+  }, [members]);
+}
+
+function useOpenWebSocketOnJoinCall() {
+  const myId = useMyId();
+  const setRemote = useSetRemoteDescription();
+  useEffect(() => {
+    if (myId !== "") {
+      var socket = new WebSocket("ws://localhost:8088/api/ws");
+      var ws = Stomp.over(socket);
+
+      ws.connect(
+        {},
+        function () {
+          ws.subscribe(`/user/${myId}/queue/private`, function (message) {
+            const dto = JSON.parse(message.body);
+            setRemote(dto);
+            alert("Message " + message.body);
+          });
+        },
+        function () {
+          alert("STOMP error ");
+        }
+      );
+    }
+  }, [myId]);
+}
 
 // function useOpenSockets2(myId: string) {
 //   if (myId != "") {

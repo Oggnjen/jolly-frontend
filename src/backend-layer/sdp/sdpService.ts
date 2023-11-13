@@ -5,6 +5,7 @@ export const provideSdp = (sdpDto: SdpDto) => {
 };
 
 export interface SdpDto {
+  memberId: string;
   sdp: string;
   destination: string;
 }

@@ -29,8 +29,6 @@ export function applyJoinCallAsyncExtraReducers(
   builder.addCase(joinCallAsync.pending, (state) => {});
 
   builder.addCase(joinCallAsync.fulfilled, (state, action) => {
-    console.log("eto me");
-
     const payload = action.payload;
     state.callId = payload.callId;
     state.myId = payload.myId;
